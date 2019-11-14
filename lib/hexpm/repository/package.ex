@@ -16,6 +16,7 @@ defmodule Hexpm.Repository.Package do
     has_many :package_owners, PackageOwner
     has_many :owners, through: [:package_owners, :user]
     has_many :downloads, PackageDownload
+    has_many :dependants, PackageDependant
     embeds_one :meta, PackageMetadata, on_replace: :delete
   end
 
@@ -128,7 +129,7 @@ defmodule Hexpm.Repository.Package do
     from(
       p in assoc(repositories, :packages),
       join: r in assoc(p, :repository),
-      preload: :downloads
+      preload: [:downloads, :dependants]
     )
     |> sort(sort)
     |> Hexpm.Utils.paginate(page, count)
@@ -261,7 +262,7 @@ defmodule Hexpm.Repository.Package do
   end
 
   defp search_param("depends", search, query) do
-    case String.split(search, ":", parts: 2) do
+    case String.split(search, "/", parts: 2) do
       [repository, package] ->
         from(
           p in query,
@@ -386,7 +387,7 @@ defmodule Hexpm.Repository.Package do
   defp sort(query, :total_dependants) do
     from(
       p in query,
-      join: d in PackageDependant,
+      left_join: d in PackageDependant,
       on: p.name == d.name,
       group_by: [p.id],
       order_by: [desc: count(d.dependant_id)]

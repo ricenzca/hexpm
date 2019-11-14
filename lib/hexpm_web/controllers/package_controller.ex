@@ -121,7 +121,7 @@ defmodule HexpmWeb.PackageController do
         repositories,
         1,
         20,
-        "depends:#{repository.name}:#{package.name}",
+        "depends:#{repository.name}/#{package.name}",
         :recent_downloads,
         [:name, :repository_id]
       )
