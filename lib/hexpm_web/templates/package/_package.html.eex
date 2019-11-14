@@ -2,7 +2,7 @@
   <div class="downloads-info">
     <span class="download-count">
       <%= @view %>
-      <%= human_number_space(length(@package.dependants)) %>
+      <%= human_number_space(length(@package.dependents)) %>
     </span> <br>
     <div class="downloads-count-wrapper">
       <span class="downloads-count-desc"><%= display_downloads_view_title(@view) %></span><br>

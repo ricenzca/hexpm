@@ -3,7 +3,7 @@ defmodule HexpmWeb.PackageController do
 
   @packages_per_page 30
   @audit_logs_per_page 10
-  @sort_params ~w(name recent_downloads total_downloads inserted_at updated_at recently_published total_dependants)
+  @sort_params ~w(name recent_downloads total_downloads inserted_at updated_at recently_published total_dependents)
   @letters for letter <- ?A..?Z, do: <<letter>>
 
   def index(conn, params) do
@@ -30,7 +30,7 @@ defmodule HexpmWeb.PackageController do
     page = Hexpm.Utils.safe_page(page_param, package_count, @packages_per_page)
     packages = fetch_packages(repositories, page, @packages_per_page, filter, sort)
     downloads = Packages.packages_downloads_with_all_views(packages)
-    exact_match = exact_match(repositories, search)
+    exact_match = exact_match(repositories, search) |> IO.inspect(label: "EXACT MATCH")
 
     render(
       conn,
@@ -116,7 +116,7 @@ defmodule HexpmWeb.PackageController do
     downloads = Packages.package_downloads(package)
     owners = Owners.all(package, user: [:emails, :organization])
 
-    dependants =
+    dependents =
       Packages.search(
         repositories,
         1,
@@ -126,7 +126,7 @@ defmodule HexpmWeb.PackageController do
         [:name, :repository_id]
       )
 
-    dependants_count = Packages.count(repositories, "depends:#{package.name}")
+    dependents_count = Packages.count(repositories, "depends:#{package.name}")
 
     audit_logs = AuditLogs.all_by(package, 1, @audit_logs_per_page)
 
@@ -144,8 +144,8 @@ defmodule HexpmWeb.PackageController do
         current_release: release,
         downloads: downloads,
         owners: owners,
-        dependants: dependants,
-        dependants_count: dependants_count,
+        dependents: dependents,
+        dependents_count: dependents_count,
         audit_logs: audit_logs
       ] ++ docs_assigns
     )

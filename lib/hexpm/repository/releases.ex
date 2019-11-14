@@ -47,7 +47,7 @@ defmodule Hexpm.Repository.Releases do
     |> create_package(repository, package, user, meta)
     |> create_release(package, user, inner_checksum, outer_checksum, meta)
     |> audit_publish(audit_data)
-    |> refresh_package_dependants()
+    |> refresh_package_dependents()
     |> Repo.transaction(timeout: @publish_timeout)
     |> publish_result(user, body)
   end
@@ -73,7 +73,7 @@ defmodule Hexpm.Repository.Releases do
     |> audit_revert(audit_data, package, release)
     |> Multi.run(:release_count, &release_count/2)
     |> Multi.run(:package, &maybe_delete_package/2)
-    |> refresh_package_dependants()
+    |> refresh_package_dependents()
     |> Repo.transaction(timeout: @publish_timeout)
     |> revert_result()
   end
@@ -214,9 +214,9 @@ defmodule Hexpm.Repository.Releases do
     end
   end
 
-  defp refresh_package_dependants(multi) do
+  defp refresh_package_dependents(multi) do
     Multi.run(multi, :refresh, fn repo, _ ->
-      :ok = repo.refresh_view(Hexpm.Repository.PackageDependant)
+      :ok = repo.refresh_view(Hexpm.Repository.PackageDependent)
       {:ok, :refresh}
     end)
   end

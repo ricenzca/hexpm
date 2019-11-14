@@ -16,7 +16,7 @@ defmodule Hexpm.Repository.Package do
     has_many :package_owners, PackageOwner
     has_many :owners, through: [:package_owners, :user]
     has_many :downloads, PackageDownload
-    has_many :dependants, PackageDependant
+    has_many :dependents, PackageDependent
     embeds_one :meta, PackageMetadata, on_replace: :delete
   end
 
@@ -129,7 +129,7 @@ defmodule Hexpm.Repository.Package do
     from(
       p in assoc(repositories, :packages),
       join: r in assoc(p, :repository),
-      preload: [:downloads, :dependants]
+      preload: [:downloads, :dependents]
     )
     |> sort(sort)
     |> Hexpm.Utils.paginate(page, count)
@@ -266,8 +266,8 @@ defmodule Hexpm.Repository.Package do
       [repository, package] ->
         from(
           p in query,
-          join: pd in Hexpm.Repository.PackageDependant,
-          on: p.id == pd.dependant_id,
+          join: pd in Hexpm.Repository.PackageDependent,
+          on: p.id == pd.dependent_id,
           where: pd.name == ^package,
           where: pd.repo == ^repository
         )
@@ -275,8 +275,8 @@ defmodule Hexpm.Repository.Package do
       _ ->
         from(
           p in query,
-          join: pd in Hexpm.Repository.PackageDependant,
-          on: p.id == pd.dependant_id,
+          join: pd in Hexpm.Repository.PackageDependent,
+          on: p.id == pd.dependent_id,
           where: pd.name == ^search
         )
     end
@@ -384,13 +384,13 @@ defmodule Hexpm.Repository.Package do
     )
   end
 
-  defp sort(query, :total_dependants) do
+  defp sort(query, :total_dependents) do
     from(
       p in query,
-      left_join: d in PackageDependant,
+      left_join: d in PackageDependent,
       on: p.name == d.name,
       group_by: [p.id],
-      order_by: [desc: count(d.dependant_id)]
+      order_by: [desc: count(d.dependent_id)]
     )
   end
 

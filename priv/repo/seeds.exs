@@ -1,7 +1,7 @@
 import Hexpm.Factory
 
 alias Hexpm.Accounts.Users
-alias Hexpm.Repository.{PackageDependant, PackageDownload, ReleaseDownload}
+alias Hexpm.Repository.{PackageDependent, PackageDownload, ReleaseDownload}
 
 Hexpm.Fake.start()
 
@@ -618,7 +618,7 @@ Hexpm.Repo.transaction(fn ->
     )
   end)
 
-  Hexpm.Repo.refresh_view(PackageDependant)
+  Hexpm.Repo.refresh_view(PackageDependent)
   Hexpm.Repo.refresh_view(PackageDownload)
   Hexpm.Repo.refresh_view(ReleaseDownload)
 end)

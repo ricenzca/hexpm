@@ -793,7 +793,7 @@ defmodule HexpmWeb.API.ReleaseControllerTest do
                "can only delete a release up to one hour after creation"
     end
 
-    test "delete package validates dependants", %{user: user, package: package} do
+    test "delete package validates dependents", %{user: user, package: package} do
       package2 = insert(:package)
       release2 = insert(:release, package: package2, version: "0.0.1")
       insert(:requirement, release: release2, dependency: package, requirement: "~> 0.0.1")

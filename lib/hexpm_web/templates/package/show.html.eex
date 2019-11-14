@@ -228,10 +228,10 @@ tools = Keyword.take(tools, compatible_tools)
       <%= render "_user.html", user: @current_release.publisher %>
     <% end %>
 
-    <h3>Dependents (<%= @dependants_count %>)</h3>
-    <%= safe_join(@dependants, ", ", fn package ->
+    <h3>Dependents (<%= @dependents_count %>)</h3>
+    <%= safe_join(@dependents, ", ", fn package ->
       link(package_name(package), to: path_for_package(package))
-    end) %><%= if @dependants_count != 0 do %>,
+    end) %><%= if @dependents_count != 0 do %>,
     <a href="<%= Routes.package_path(Endpoint, :index, search: "depends:#{@repository_name}:#{@package.name}") %>">show all...</a>
     <% end %>
   </div>
