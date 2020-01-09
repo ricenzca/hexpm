@@ -11,7 +11,7 @@ defmodule HexpmWeb.ViewIcons do
   @external_resource @glyphicons_svg
   @external_resource @glyphicons_less
 
-  :ok = Application.load(:xmerl)
+  Application.load(:xmerl)
   {:ok, xmerl_version} = :application.get_key(:xmerl, :vsn)
 
   xmerl_version =
