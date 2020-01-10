@@ -56,6 +56,7 @@ defmodule HexpmWeb do
           select: 4
         ]
 
+      alias HexpmWeb.ViewHelpers
       import HexpmWeb.{ViewHelpers, ViewIcons}
 
       alias HexpmWeb.{Endpoint, Router}

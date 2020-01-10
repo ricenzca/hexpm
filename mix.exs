@@ -7,10 +7,12 @@ defmodule Hexpm.MixProject do
       version: "0.0.1",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
+      elixirc_options: [parser_options: [columns: true]],
       xref: xref(),
       compilers: [:phoenix] ++ Mix.compilers(),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
+      consolidate_protocols: Mix.env() != :dev,
       aliases: aliases(),
       releases: releases(),
       deps: deps()
